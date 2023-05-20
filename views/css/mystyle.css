@@ -1,0 +1,10 @@
+.form_niveau 
+{
+    display: flex;
+    gap: 1em;
+    width: 500px;
+}
+.form_niveau input
+{
+    width: 50%;
+}
