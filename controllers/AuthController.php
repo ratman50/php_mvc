@@ -1,38 +1,36 @@
 <?php
 class AuthController
 {
-    private $numero="";
-    private $password="";
-    public function __construct()
-    {
-        if ($_SERVER["REQUEST_METHOD"]=="POST") {
-            $this->numero=$_POST["numero"];
-            $this->password=$_POST["password"];
-        }
-        
-    }
-    private function isNotFieldEmpty()
-    {
-        $fields=get_object_vars($this);
-        foreach ($fields as $value) {
-            if (empty($value)) {
-                return false;
-            }
-        }
-        return true;
-    }
+    private $model;
+    // public function __construct()
+    // {
+    // }
     public function login()
     {
-        if ($this->isLoggedIn()) {
-            header("Location: index.php");
+        if (Util::isLoggedIn()) {
+            header("Location: /home");
             exit();
         }
-        if ($this->isNotFieldEmpty() && $this->validate()) {
-            $_SESSION["telephone"] = $this->numero;
-            header("Location: index.php");
-            exit();
+        if ($_SERVER["REQUEST_METHOD"]="POST" 
+        && Util::isFielSet($_POST,["numero","password"])
+        && Util::isFieldEmpty($_POST)
+        ) {
+            $query="SELECT * FROM USERS WHERE num_user = :num AND  password_user= :pass";
+            $info=[
+                ":num"=>$_POST['numero'],
+                ":pass"=>$_POST['password']
+            ];
+            var_dump($info);
+            $model=new BaseModel($query, $info);
+            $model->requete();
+            if($model->getRowsAffected()==1)
+            {
+                $_SESSION["telephone"] = $info[":num"];
+                header("Location: /home");
+                exit();
+            }
+            $notification="identifiant non valide";
         }
-        $notification="identifiant non valide";
         require_once __DIR__."/../views/login.php";
     }
     public function logout()
@@ -43,20 +41,6 @@ class AuthController
         // Rediriger vers la page d'accueil
         header('Location: index.php');
         exit();
-    }
-    private function isLoggedIn()
-    {
-        // Vérifier si l'utilisateur est authentifié
-        return isset($_SESSION["telephone"]);
-    }
-    private function validate()
-    {
-        $info=[
-            ":num"=>$this->numero,
-            ":pass"=>$this->password
-        ];
-        $model= new UserModel();
-        return count($model->connect($info))>0;
     }
     
 }

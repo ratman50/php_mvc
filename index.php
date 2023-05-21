@@ -10,28 +10,31 @@ require_once 'controllers/HomeController.php';
 require_once 'controllers/NiveauController.php';
 require_once 'routers/Route.php';
 require_once "models/BaseModel.php";
-require_once "models/UserModel.php";
+require_once "controllers/Util.php";
 session_start();
 $url=$_SERVER["REQUEST_URI"];
 $path=parse_url($url, PHP_URL_PATH);
-// var_dump($path);
 
-$path=explode("/",$path);
 $Controllers=[
-    "login"=>"AuthController@login",
-    "logout"=>"AuthController@logout",
-    "niveau"=>"NiveauController@niveau",
-    "ajouterNiveau"=>"NiveauController@niveau"
+    "/login"=>"AuthController@login",
+    "/logout"=>"AuthController@logout",
+    "/niveau"=>"NiveauController@niveau",
+    "/home"=>"HomeController@index",
+    "/ajouterNiveau"=>"NiveauController@niveau"
 ];
-if(array_key_exists($path[2], $Controllers))
+if(array_key_exists($path, $Controllers))
 {
-    $element=$path[2];
-    $control=$Controllers[$element];
-    $control=explode("@",$control)[0];
-    echo "<br>",$control;
-    echo "<br>",$element;
-    // $route= new Route($control, $element);
-    // $route->route();
+    $controller=explode("@",$Controllers[$path]);
+    $control=$controller[0];
+    $useCase=$controller[1];
+    try {
+        $route= new Route($control, $useCase);
+        $route->route();
+        //code...
+    } catch (Exception $e) {
+        //throw $th;
+        echo $e->getMessage();
+    }
     exit();
 }
 
