@@ -19,10 +19,7 @@ require_once __DIR__."/../views/logoutModal.php";
 
     <!-- Custom fonts for this template-->
     <link href="views/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Custom styles for this template-->
     <link href="views/css/sb-admin-2.css" rel="stylesheet">
 
@@ -76,12 +73,17 @@ require_once __DIR__."/../views/logoutModal.php";
     <!-- Bootstrap core JavaScript-->
     <script src="/views/vendor/jquery/jquery.min.js"></script>
     <script src="/views/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
+    <!-- typeahead core JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js" integrity="sha512-qOBWNAMfkz+vXXgbh0Wz7qYSLZp6c14R0bZeVX2TdQxWpuKr6yHjBIM69fcF8Ve4GUX6B6AKRQJqiiAmwvmUmQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
     <!-- Core plugin JavaScript-->
     <script src="/views/vendor/jquery-easing/jquery.easing.min.js"></script>
 
     <!-- Custom scripts for all pages-->
     <script src="/views/js/sb-admin-2.min.js"></script>
+
+
+    <script src="/views/js/myscript.js"></script>
 
     <!-- Page level plugins -->
     <script src="/views/vendor/chart.js/Chart.min.js"></script>

@@ -7,7 +7,7 @@
         private $rowsAffected;
         private $resultat;
 
-        public function __construct($query, $params)
+        public function __construct($query, $params=[])
         {
             $this->connection=new PDO("mysql:host=".DB_HOST.";dbname=".DB_DATABASE_NAME, DB_USERNAME, DB_PASSWORD);
             $this->query=$query;
@@ -20,8 +20,7 @@
             $statement=$this->connection->prepare($this->query);
             $statement->execute($this->params);
             $this->rowsAffected=$statement->rowCount();
-            $statement->fetchAll(PDO::FETCH_ASSOC);
-            $this->resultat=$statement;
+            $this->resultat=$statement->fetchAll(PDO::FETCH_ASSOC);;
         }
         public function getResultat(){
             return $this->resultat;

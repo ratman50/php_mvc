@@ -11,6 +11,7 @@ require_once 'controllers/NiveauController.php';
 require_once 'routers/Route.php';
 require_once "models/BaseModel.php";
 require_once "controllers/Util.php";
+require_once "controllers/ClasseController.php";
 session_start();
 $url=$_SERVER["REQUEST_URI"];
 $path=parse_url($url, PHP_URL_PATH);
@@ -20,7 +21,10 @@ $Controllers=[
     "/logout"=>"AuthController@logout",
     "/niveau"=>"NiveauController@niveau",
     "/home"=>"HomeController@index",
-    "/ajouterNiveau"=>"NiveauController@niveau"
+    "/ajouterNiveau"=>"NiveauController@ajouterNiveau",
+    "/supprimerNiveau"=>"NiveauController@supprimerNiveau",
+    "/modifierNiveau"=>"NiveauController@modifierNiveau",
+    "/ajouterClasse"=>"ClasseController@ajouterClasse"
 ];
 if(array_key_exists($path, $Controllers))
 {
