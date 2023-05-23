@@ -2,6 +2,7 @@
 require_once __DIR__."/../views/sidebar.php";
 require_once __DIR__."/../views/topBar.php";
 require_once __DIR__."/../views/logoutModal.php";
+require_once __DIR__."/../views/modalNotification.php";
 ?>
 
 <!DOCTYPE html>
@@ -70,6 +71,10 @@ require_once __DIR__."/../views/logoutModal.php";
 
     <!-- Logout Modal-->
     <?=$logoutModal?>
+
+    <!-- notification Modal -->
+    <?=$modalNotification?>
+
     <!-- Bootstrap core JavaScript-->
     <script src="/views/vendor/jquery/jquery.min.js"></script>
     <script src="/views/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -83,7 +88,7 @@ require_once __DIR__."/../views/logoutModal.php";
     <script src="/views/js/sb-admin-2.min.js"></script>
 
 
-    <script src="/views/js/myscript.js"></script>
+    <script src="/views/js/myscript.js" type="module"></script>
 
     <!-- Page level plugins -->
     <script src="/views/vendor/chart.js/Chart.min.js"></script>

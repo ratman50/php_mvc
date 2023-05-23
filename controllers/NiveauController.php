@@ -6,8 +6,8 @@ class NiveauController
     {
         $query="SELECT idNiveau, libelle_niveau, GROUP_CONCAT(nom_classe) as CLASSES FROM `NIVEAU` LEFT JOIN CLASSES ON NIVEAU.id_niveau=CLASSES.idNiveau GROUP BY libelle_niveau;
         ";
-        $model=new BaseModel($query);
-        $model->requete();
+        $model=new BaseModel();
+        $model->requete($query);
         $data=$model->getResultat();
         require_once __DIR__."/../views/niveaux.php";
    
@@ -23,8 +23,8 @@ class NiveauController
                 ":libelle"=>$niveau
             ];
             $query="INSERT INTO NIVEAU (libelle_niveau) VALUES (:libelle)";
-            $model= new BaseModel($query,$params);
-            $model->requete();
+            $model= new BaseModel();
+            $model->requete($query);
         }
         header('Location:/niveau');
     }
@@ -38,8 +38,8 @@ class NiveauController
                 ":id"=>$id
             ];
             $query="DELETE FROM NIVEAU WHERE id_niveau = :id";
-            $model= new BaseModel($query,$params);
-            $model->requete();
+            $model= new BaseModel();
+            $model->requete($query,$params);
             header('Location:/niveau');
         }
 
@@ -61,8 +61,8 @@ class NiveauController
                 ":id"=>$id
             ];
             $query="UPDATE NIVEAU SET libelle_niveau=:niv WHERE id_niveau = :id";
-            $model= new BaseModel($query,$params);
-            $model->requete();
+            $model= new BaseModel();
+            $model->requete($query,$params);
             header('Location:/niveau');
         }
 

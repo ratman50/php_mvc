@@ -17,8 +17,8 @@ class ClasseController
                 ":id"=>$id
             ];
             $query="INSERT INTO CLASSES(nom_classe, idNiveau) VALUES (:classe, :id)";
-            $model= new BaseModel($query,$params);
-            $model->requete();
+            $model= new BaseModel();
+            $model->requete($query,$params);
         }
         header('Location:/niveau');
 

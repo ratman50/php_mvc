@@ -2,6 +2,13 @@ const modif=document.querySelector(".modif");
 const fieldModif=document.querySelector('.fieldModif');
 const formClass=document.getElementsByClassName('form-class');
 const classe_niveau=document.getElementsByClassName('classe_niveau');
+const notif_content=document.querySelector('.notif_content');
+
+if(notif_content.textContent)
+{
+        console.log(textContent);
+}
+
 const Niveaux={
     "enseignement primaire":["CI","CP","CE1","CE2","CM1","CM2"],
     "enseignement secondaire inférieur":["6ième","5ième","4ième","3ième"],

@@ -12,20 +12,11 @@ require_once 'routers/Route.php';
 require_once "models/BaseModel.php";
 require_once "controllers/Util.php";
 require_once "controllers/ClasseController.php";
+require_once "controllers/AnneeController.php";
 session_start();
 $url=$_SERVER["REQUEST_URI"];
 $path=parse_url($url, PHP_URL_PATH);
 
-$Controllers=[
-    "/login"=>"AuthController@login",
-    "/logout"=>"AuthController@logout",
-    "/niveau"=>"NiveauController@niveau",
-    "/home"=>"HomeController@index",
-    "/ajouterNiveau"=>"NiveauController@ajouterNiveau",
-    "/supprimerNiveau"=>"NiveauController@supprimerNiveau",
-    "/modifierNiveau"=>"NiveauController@modifierNiveau",
-    "/ajouterClasse"=>"ClasseController@ajouterClasse"
-];
 if(array_key_exists($path, $Controllers))
 {
     $controller=explode("@",$Controllers[$path]);
