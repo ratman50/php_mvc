@@ -11,8 +11,10 @@ class Route
     }
     public function route()
     {
+        
         $control= new $this->controller;
         $control->{$this->useCase}();
+        // $_SESSION["notification"]="";
 
     }
 

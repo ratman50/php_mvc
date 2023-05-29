@@ -38,6 +38,7 @@
                         <h6 class="collapse-header">Custom Components:</h6>
                         <a class="collapse-item" href="/niveau">Niveaux</a>
                         <a class="collapse-item" href="/annee">Années scolaires</a>
+                        <a class="collapse-item" href="/eleve">Eleves</a>
                     </div>
                 </div>
             </li>

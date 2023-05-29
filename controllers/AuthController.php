@@ -21,8 +21,8 @@ class AuthController
                 ":pass"=>$_POST['password']
             ];
             var_dump($info);
-            $model=new BaseModel($query, $info);
-            $model->requete();
+            $model=new BaseModel();
+            $model->requete($query, $info);
             if($model->getRowsAffected()==1)
             {
                 $_SESSION["telephone"] = $info[":num"];

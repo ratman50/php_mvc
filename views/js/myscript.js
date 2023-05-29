@@ -1,124 +1,161 @@
-const modif=document.querySelector(".modif");
 const fieldModif=document.querySelector('.fieldModif');
 const formClass=document.getElementsByClassName('form-class');
 const classe_niveau=document.getElementsByClassName('classe_niveau');
 const notif_content=document.querySelector('.notif_content');
-
-if(notif_content.textContent)
+const modal_body_notification=document.querySelector('.modal-body.notification');
+const container_form=document.querySelector('.container-form');
+const classes=document.querySelector('.classes');
+const niveauxSelect=document.querySelector('.form-label.niveaux select');
+const form_eleve=document.forms["form-eleve"];
+const modalNotif=document.getElementById('modalNotif')
+const notifContent=document.querySelector(".notif_content p").textContent;
+if(notifContent)
 {
-        console.log(textContent);
+    modalNotif.classList.add("show");
+    modalNotif.style.display="block";
+    setTimeout(() => {
+        modalNotif.classList.remove("show");
+    modalNotif.style.display="none";
+    }, 1300);
 }
 
-const Niveaux={
-    "enseignement primaire":["CI","CP","CE1","CE2","CM1","CM2"],
-    "enseignement secondaire inférieur":["6ième","5ième","4ième","3ième"],
-    "enseignement secondaire supérieur":["2nd","1er","Tle"],
+let data={
+    "prenom":"",
+    "nom":"",
+    "numero":"",
+    "niveau":"",
+    "classe":"",
+    "sexe":"",
+    "date_naiss":"",
+    "lieu_naiss":""
 };
-const containerFluid=document.querySelector(".container-fluid .niveaux");
-const elements=containerFluid.childElementCount;
-console.log(elements);
-if(elements<Object.keys(Niveaux).length)
-{
-    const valNiveau=Object.keys(Niveaux)[elements];
-    const nameNiveau=document.querySelector(".name-niveau");
-    nameNiveau.value=valNiveau;
-    console.log(nameNiveau);
-    console.log(valNiveau);
-}
-else
-{
-    //desactiver le bouton ajouter
-}
+const tabRequire=[
+    "prenom",
+    "nom",
+    "numero",
+    "niveau",
+    "classe"
+];
+form_eleve["niveau"].addEventListener("change",(e)=>{
+    const selectedIndex = e.target.selectedIndex;
+    const selectedOption = e.target.options[selectedIndex];
+    const valueOption=selectedOption.value;
+    const selectClass=classes.querySelector("select");
+    if (valueOption) {
+        fetch(`http://localhost:8000/listerClasse?id=${+valueOption}`)
+        .then(response=>response.json())
+        .then(data=>{
+            createOptions(data,selectClass);
+        })
+        .catch(er=>{console.log(er)})
+    }else
+    createOptions([],selectClass);
 
-[...formClass].forEach(form=>{
-    console.log(form);
-    const parent=form.parentElement;
-    const fieldModif=parent.querySelector(".fieldModif");
-    
-    const valSearch=fieldModif.value;
-    const pos=form.childElementCount-3;
-    console.log(pos);
-    if(pos<Niveaux[valSearch].length)
-    {
-        const valIns=Niveaux[valSearch][pos];
-        const inputInser=parent.querySelector(".className");
-        inputInser.value=valIns;
-        console.log(inputInser);
-    }
-})
 
-modif.addEventListener('click',()=>{
-    fieldModif.disabled=false;
 });
-// [...addClass].forEach(element => {
+form_eleve["save"].addEventListener("click",()=>{
+    let isOk="";
+    tabRequire.forEach(elem=>{
+        const inputElem=form_eleve[elem];
+        const method=FieldName[inputElem.name];
+        data[inputElem.name]=inputElem.value;
+        const notifValue=inputElem.parentElement.querySelector('.notification');
+        notifValue.textContent="";
+        Util[method](inputElem, notifValue);
+        isOk +=notifValue.textContent;
+
+    });
+    data["sexe"]=form_eleve["sexe"].value;
+    data["date_naiss"]=form_eleve["date_naiss"].value;
+    data["lieu_naiss"]=form_eleve["lieu_naiss"].value;
+    console.log(data);
+    if(!isOk)
+    {
+        console.log("envoyer");
+        fetch("http://localhost:8000/ajouterEleve",{
+            method:"POST",
+            headers:{
+                'Content-Type':"application/json"
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response=>{console.log(response);})
+        // .then(data=>{console.log(data);})
+        .catch(err=>console.log(err))
+    }
+    // console.log(isOk);
+})
+let Util={
+    "controlVide":function(field, notifValue){
+        let notif="";
+        const valField=field.value;
+        if(!valField)
+        {
+            etat=false;
+            notif="champs est vide";
+        }
+        notifValue.textContent=notif;
+    },
+    "controlNumero":function(field, notifValue)
+    {
+        const valField=field.value;
+        if(valField.length>0 && !(+valField)) {
+            notif="seuls les chiffres sont acceptés";
+            notifValue.textContent=notif;
+        }
+        else if(valField){
+            fetch(`http://localhost:8000/searchEleveByNum?id=${+valField}`)
+            .then(response=> response.json())
+            .then(resultat=>{
+                notif=resultat.data ? "":"numero deja attribué";
+                notifValue.textContent=notif;
+            })
+            .catch(er=>{console.log(er)})
+
+        }
+    },
+    "controlSelect":function(field, notifValue){
+        const valField=field.value;
+        const nameElem=field.name;
+        if(!valField)
+        {
+            notif="Vous devez choisir "+nameElem;
+            notifValue.textContent=notif;
+        }
+    }
+}
+const FieldName={
+    "prenom":"controlVide",
+    "nom":"controlVide",
+    "numero":"controlNumero",
+    "niveau":"controlSelect",
+    "classe":"controlSelect"
+}
+
+tabRequire.forEach(elem=>{
+    const inputElem=form_eleve[elem];
     
-//     element.addEventListener('click',(e)=>{
-//         console.log("bal ala");
-//         const target=e.target;
-//         const parent=target.parentElement;
-//         console.log(parent);
-//         const form=document.createElement("form");
-//         form.setAttribute("method","POST");
-//         form.setAttribute("action","/ajouterClasse");
-//         form.className='d-flex flex-column position-relative';
-//         const child=document.createElement("input");
-//         child.setAttribute("name","classe");
-//         const niveau=document.createElement("input");
-//         niveau.setAttribute("name","niveau");
-//         niveau.setAttribute("type","hidden");
-//         child.className="classe_niveau text-danger w-25 mt-2 border-0 form-control mb-2 ";
-//         child.id="myInput";
-//         const ul=document.createElement('ul');
-//         ul.className="position-absolute w-25 dropdown-menu";
-        
-//         ul.style.top="100%";
-//         ul.style.left="0";
-//         // ul.style.display="block";
-        
-//         form.appendChild(child);
-//         parent.appendChild(form);
-//         form.appendChild(ul);
-//         child.focus();
-//         const pr=parent.parentElement.parentElement;
-//         niveau.value=pr.dataset.id;
-//         form.appendChild(niveau);
-//         console.log(pr);
-//         child.addEventListener('blur',()=>{
-//             if(child.value=="")
-//             {
-//                 form.remove();
-//             }
-//             setTimeout(()=>{
-//                 ul.style.display="none";
-//             },200);
-//         });
-//         const valSearch=pr.querySelector('.name-value').value;
-//         console.log(Niveaux[valSearch]);
-//         child.addEventListener('input',()=>{
-//             const val=child.value;
-//             console.log(val.toUpperCase());
-//             ul.innerHTML="";
-//             const resultat=Niveaux[valSearch].filter(niveau=>niveau.startsWith(val.toUpperCase()));
-//             if(val.length>0 && resultat.length>1)
-//             {
-//                 ul.style.display="block";
-//                 console.table(resultat);
-//                 resultat.forEach(res=>{
-//                     const li=document.createElement("option");
-//                     li.className="dropdown-item";
-//                     li.textContent=res;
-//                     ul.appendChild(li);
-//                     li.addEventListener("click",()=>{
-//                         child.value=li.textContent;
-//                         child.focus();
-//                         setTimeout(()=>{
-//                             ul.style.display="none";
-//                         },200);
-//                     })
-//                 })
+    inputElem.addEventListener("blur",(e)=>{
+        const target=e.target;
+        const method=FieldName[target.name];
+        const notifValue=target.parentElement.querySelector('.notification');
+        notifValue.textContent="";
+        Util[method](target, notifValue);
+    })
+});
 
-//             }
-//         })
 
-//     })
-// });
+
+
+function  controlVide(valField) {
+    return valField=="" ? "champs est vide":"";
+}
+
+function createOptions(donnee, container) {
+    container.innerHTML=`<option value="">Choisir une classe</option>`;
+    const data=donnee?.data;
+    if(data)
+        data.forEach(da=>{
+            container.innerHTML+=`<option value=${da["id_classe"]}>${da["nom_classe"]}</option>`
+        })    
+}

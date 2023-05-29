@@ -22,7 +22,10 @@
     {
         return isset($_SESSION["telephone"])  ;
     }
-
+    public static function checkEmpty($val)
+    {
+        return !empty($val);
+    }
     public static function checkAnnee($annee) {
         if (!preg_match('/^\d{4}-\d{4}$/', $annee)) {
             return 0;

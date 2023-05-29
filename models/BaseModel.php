@@ -27,7 +27,8 @@
         /**
          * @return les données de la requete
          */
-        public function getResultat(){
+        public function getResultat():array
+        {
             return $this->resultat;
         }
         /**

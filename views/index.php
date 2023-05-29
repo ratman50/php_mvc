@@ -88,7 +88,7 @@ require_once __DIR__."/../views/modalNotification.php";
     <script src="/views/js/sb-admin-2.min.js"></script>
 
 
-    <script src="/views/js/myscript.js" type="module"></script>
+    <script src="/views/js/myscript.js" ></script>
 
     <!-- Page level plugins -->
     <script src="/views/vendor/chart.js/Chart.min.js"></script>
