@@ -2,7 +2,7 @@
 class ClasseController extends BaseController
 {
     
-    public function ajouterClasse()
+    public function ajout()
     {
         $requestMethod=$_SERVER["REQUEST_METHOD"];
         if($requestMethod=="POST" && 
@@ -32,39 +32,73 @@ class ClasseController extends BaseController
         header('Location:/niveau');
 
     }
-    protected function getUriSegments()
+    public function coeff($id)
     {
-        $uri=parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
-        $uri= explode('/', $uri);
-        return $uri;
+        require_once __DIR__."/../views/coefficient.php";
+
+        
     }
-    protected function getQueryStringParams()
+    public function discipline($id)
     {
-        $query=[];
-        parse_str($_SERVER['QUERY_STRING'], $query);
-        return $query;
+        $query="
+        SELECT INFO_GROUPE.id_info, INFO_GROUPE.ressource,INFO_GROUPE.composition,DISCIPLINES.code_discipline, DISCIPLINES.desc_discipline
+        FROM INFO_GROUPE INNER JOIN DISCIPLINES ON INFO_GROUPE.discipline=DISCIPLINES.id_discipline 
+        WHERE INFO_GROUPE.classe=$id AND INFO_GROUPE.etat=1;
+        ";
+        $this->model->requete($query);
+        echo json_encode([
+            "data"=>$this->model->getResultat(),
+            "message"=>"les disciplines",
+            "status"=>"200"
+        ]);
     }
-    public function listerClasse()
+    public function list($id="")
     {
-        $requestMethod=$_SERVER["REQUEST_METHOD"];
-        $uri=$this->getQueryStringParams();
-        if($requestMethod=="GET" && isset($uri["id"]) && !empty($uri["id"]))
+        $query="
+        SELECT * FROM `CLASSES`
+        ";
+        $params=[];
+        if(!empty($id))
         {
-            $id=$uri["id"];
-            $query="SELECT id_classe, nom_classe FROM CLASSES WHERE idNiveau=:id;";
+            $query=$query." WHERE groupe_niveau=:id";
             $params=[
                 ":id"=>$id,
             ];
-            $this->model->requete($query, $params);
-            echo json_encode(
-                [
-                    "data"=>$this->model->getResultat(),
-                    "message"=>"SUCCESS",
-                    "status"=>"200"
-                ]
-                
-            );
-           
         }
+        $this->model->requete($query, $params);
+        $data=$this->model->getResultat();
+        echo json_encode(
+            [
+                "data"=>$data,
+                "message"=>"SUCCESS",
+                "status"=>"200"
+            ]
+        );
+           
+    }
+
+    public function maxval()
+    {
+        $data=$this->receiveData();
+        $classe=$data->classe;
+        $updates=$data->updates;
+        foreach ($updates as  $value) {
+            // $this->update("INFO_GROUPE",)
+            $up= isset($value->ressource) ?[
+                "nameCol"=>"ressource",
+                "valCol"=>$value->ressource
+            ]:[
+                "nameCol"=>"composition",
+                "valCol"=>$value->composition
+            ];
+            $this->update("INFO_GROUPE", $up, ["nameCol"=>"id_info","valCol"=>$value->discipline]);
+            
+        }
+        echo json_encode(
+            [
+                "message"=>"ok"
+            ]
+            );
+        // echo json_encode($data->updates);
     }
 }

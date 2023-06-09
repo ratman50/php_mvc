@@ -25,7 +25,8 @@ $Controllers=[
     "/searchEleveByNum"=>"EleveController@searchEleveByNum",
     "/ajouterEleve"=>"EleveController@ajoutEleve",
     "/form_eleve"=>"EleveController@form_eleve",
-    "/rechercherByClass"=>"EleveController@rechercherByClass"
+    "/rechercherByClass"=>"EleveController@rechercherByClass",
+    "/gestion"=>"DisciplineController@gestion"
 ];
 
 define("CONTROLLERS", $Controllers);

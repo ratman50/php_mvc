@@ -2,36 +2,41 @@
 
 class NiveauController extends BaseController
 {
-    private function orderClasse(&$data)
+    private $niveau;
+    public function __construct()
     {
-        foreach ($data as $ke=>  $value) {
-            $classes=[];
-            $split=explode(",",$value["CLASSES"]);
-            foreach ($split as  $val) {
-                $split2=explode("@",$val);
-                $classe=[
-                    substr($split2[0],strlen($split2[0])-1)=>$split2[1],
-                ];
-                $cle=substr($split2[0],0, strlen($split2[0])-1);
-                if (array_key_exists($cle,$classes)) {
-                    $classes[$cle][substr($split2[0],strlen($split2[0])-1)]=$split2[1];
-                }else
-                    $classes[$cle]=$classe;
-
-               
-            }
-            $data[$ke]["CLASSES"]=$classes;
-            // $value["CLASSES"]=$classes;
-        }
-    }  
-    public function niveau()
+        parent::__construct();
+        $this->model->requete("SELECT * FROM NIVEAU");  
+        $this->niveau=$this->model->getResultat();
+    }
+    public function index()
     {
-        $query="SELECT id_niveau, libelle_niveau, GROUP_CONCAT(nom_classe,\"@\", CLASSES.id_classe) as CLASSES FROM `NIVEAU` LEFT JOIN CLASSES ON NIVEAU.id_niveau=CLASSES.idNiveau GROUP BY libelle_niveau;";
+        $query="
+        SELECT NIVEAU.id_niveau, NIVEAU.libelle_niveau , GROUP_CONCAT(CLASSES.nom_classe,\"@\", CLASSES.id_classe) as CLASSES FROM NIVEAU INNER JOIN CLASSES ON CLASSES.groupe_niveau=NIVEAU.id_niveau GROUP BY NIVEAU.id_niveau;
+        ";
         $this->model->requete($query);
         $data=$this->model->getResultat();
-        $this->orderClasse($data);
+        Util::orderClasse($data);
         require_once __DIR__."/../views/niveaux.php";
    
+    }
+    public function list($id="")
+    {
+        if(empty($id))
+        {
+            $this->index();
+            exit();
+        }
+        $query="
+        SELECT NIVEAU.id_niveau, NIVEAU.libelle_niveau , GROUP_CONCAT(CLASSES.nom_classe,\"@\", CLASSES.id_classe) as CLASSES 
+        FROM NIVEAU INNER JOIN CLASSES ON CLASSES.groupe_niveau=NIVEAU.id_niveau 
+        WHERE NIVEAU.id_niveau=$id
+        GROUP BY NIVEAU.id_niveau;
+        ";
+        $this->model->requete($query);
+        $data=$this->model->getResultat();
+        Util::orderClasse($data);
+        require_once __DIR__."/../views/niveaux.php";
     }
     public function rechercherNiveau($name)
     {
@@ -39,7 +44,7 @@ class NiveauController extends BaseController
         $this->model->requete($query, [":name"=>$name])[0];
         return !empty($this->model->getResultat()) ;
     }
-    public function ajouterNiveau()
+    public function ajout()
     {
         $requestMethod=$_SERVER["REQUEST_METHOD"];
         // echo "entree";

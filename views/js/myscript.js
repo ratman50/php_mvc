@@ -9,6 +9,7 @@ const niveauxSelect=document.querySelector('.form-label.niveaux select');
 const form_eleve=document.forms["form-eleve"];
 const modalNotif=document.getElementById('modalNotif')
 const notifContent=document.querySelector(".notif_content p").textContent;
+let tabId=[];
 if(notifContent)
 {
     modalNotif.classList.add("show");
@@ -36,23 +37,53 @@ const tabRequire=[
     "niveau",
     "classe"
 ];
-form_eleve["niveau"].addEventListener("change",(e)=>{
-    const selectedIndex = e.target.selectedIndex;
-    const selectedOption = e.target.options[selectedIndex];
-    const valueOption=selectedOption.value;
-    const selectClass=classes.querySelector("select");
-    if (valueOption) {
-        fetch(`http://localhost:8000/listerClasse?id=${+valueOption}`)
-        .then(response=>response.json())
-        .then(data=>{
-            createOptions(data,selectClass);
-        })
-        .catch(er=>{console.log(er)})
-    }else
-    createOptions([],selectClass);
+// function updateClasseOnChange(declencheur, target, callback, url)
+// {
+//     console.log(declencheur);
+//     if (declencheur) {
+        
+//         declencheur.addEventListener('change',e=>{
+//             const selectedIndex=e.target.selectedIndex;
+//             const selectedOption=e.target.options[selectedIndex];
+//             const valueOption=selectedOption.value;
+//             const uri=`${url}/${+valueOption}`;
+//             if (valueOption) {
+//                 fetch(uri)
+//                 .then(response=>response.json())
+//                 .then(data=>{
+//                     callback(data,target);
+//                     if (declencheur===inputGroupNiveau) {
+//                         console.log("degak");
+//                         fetch(`http://localhost:8000/discipline/group/${valueOption}`)
+//                         .then(response=>response.json())
+//                         .then(data=>{createOptionDisci(data,inputGroupDiscipline)})
+//                     }
+//                 })
+//                 .catch(er=>{console.log(er)})
+//             }else
+//             callback([],target);
+        
+//         })
+//     }
+// }
+// const urlListerGroupe="http://localhost:8000/discipline/group";
+// updateClasseOnChange(inputGroupClasse, inputGroupDiscipline, createOptionDisci, urlListerGroupe);
+// console.log(add_discipline);
 
 
-});
+
+// input.addEventListener("blur",()=>{
+   
+
+//     setTimeout(()=>{
+//         text_group.classList.add("invisible");
+
+//     },600)
+
+// })
+
+updateClasseOnChange(form_eleve["niveau"], classes.querySelector('select'), createOptions,urlListerClasse);
+console.log(inputGroupNiveau);
 form_eleve["save"].addEventListener("click",()=>{
     let isOk="";
     tabRequire.forEach(elem=>{
@@ -71,7 +102,6 @@ form_eleve["save"].addEventListener("click",()=>{
     console.log(data);
     if(!isOk)
     {
-        console.log("envoyer");
         fetch("http://localhost:8000/ajouterEleve",{
             method:"POST",
             headers:{
@@ -79,8 +109,10 @@ form_eleve["save"].addEventListener("click",()=>{
             },
             body: JSON.stringify(data)
         })
-        .then(response=>{console.log(response);})
-        // .then(data=>{console.log(data);})
+        .then(response=>response.json())
+        .then(data=>{console.log(data);
+        window.location.href="/eleve";
+        })
         .catch(err=>console.log(err))
     }
     // console.log(isOk);
@@ -159,3 +191,6 @@ function createOptions(donnee, container) {
             container.innerHTML+=`<option value=${da["id_classe"]}>${da["nom_classe"]}</option>`
         })    
 }
+
+
+

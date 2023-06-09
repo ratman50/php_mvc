@@ -2,29 +2,29 @@
 
 class EleveController extends BaseController
 {
-    public function rechercherByClass()
+    public function liste($id="")
     {
-        $requestMethod=$_SERVER["REQUEST_METHOD"];
-        if($requestMethod=="GET" && isset($_GET["classe"]) && !empty($_GET["classe"]))
-        {
-            $classe=$_GET["classe"];
-            $query="SELECT * FROM INSCRIPTION INNER JOIN ELEVES ON ELEVES.id_eleve=INSCRIPTION.eleve INNER JOIN NIVEAU ON NIVEAU.id_niveau=INSCRIPTION.niveau INNER JOIN CLASSES ON CLASSES.id_classe=INSCRIPTION.classe
-            WHERE INSCRIPTION.classe=:classe
-            ";            
+        $query = "SELECT * FROM INSCRIPTION INNER JOIN ELEVES ON ELEVES.id_eleve=INSCRIPTION.eleve INNER JOIN NIVEAU ON NIVEAU.id_niveau=INSCRIPTION.niveau INNER JOIN CLASSES ON CLASSES.id_classe=INSCRIPTION.classe";
+        $params=[];
+        $classe="";
+        $id_classe="";
+        if (!empty($id)) {
+            $query=$query." WHERE INSCRIPTION.classe= :classe ";            
             $params=[
-                ":classe"=>$classe,
+                    ":classe"=>intval( $id),
             ];
-            $this->model->requete($query, $params);
-            $data=$this->model->getResultat();
-            
-            require_once __DIR__."/../views/eleves.php";
-
-            
+            $this->model->requete("SELECT * FROM CLASSES WHERE id_classe=$id");
+            $res=$this->model->getResultat();
+            $classe=$res[0]["nom_classe"];
+            $id_classe=$res[0]["id_classe"];
         }
+        $this->model->requete($query, $params);
+        $data=$this->model->getResultat();
+        require_once __DIR__."/../views/eleves.php";
     }
-    public function form_eleve()
+    public function form()
     {
-        $query="SELECT id_niveau, libelle_niveau FROM NIVEAU LEFT JOIN CLASSES ON NIVEAU.id_niveau=CLASSES.idNiveau WHERE CLASSES.idNiveau is not null GROUP BY libelle_niveau;
+        $query="SELECT id_niveau, libelle_niveau FROM NIVEAU LEFT JOIN CLASSES ON NIVEAU.id_niveau=CLASSES.groupe_niveau WHERE CLASSES.groupe_niveau is not null GROUP BY libelle_niveau;
         ";
         $this->model->requete($query);
         $niveau=$this->model->getResultat();
@@ -79,15 +79,16 @@ class EleveController extends BaseController
         if($requestMethod=="POST")
         {
            $data=$this->receiveData();
+        //    echo json_encode($data);
            $params1=[];
            $params2=[];
            $query1="";
            $query2="";
            $this->prepareRequete($data,$query1, $query2,$params1, $params2);
-        //    AJOUT DE L'ELEVE
+            //    AJOUT DE L'ELEVE
            $this->model->requete($query1,$params1);
             $query2=substr($query2,0,strlen($query2)-1).",eleve,annee) VALUES (";
-            $query2=$query2.":classe,:niveau,:eleve,:annee)";
+            $query2=$query2.":niveau,:classe,:eleve,:annee)";
 
             // RECUPERATION DU DERNIER ELEVE ENREGISTRE
             $this->model->requete("SELECT * FROM ELEVES WHERE id_eleve= LAST_INSERT_ID()");
@@ -133,7 +134,7 @@ class EleveController extends BaseController
         }
 
     }
-    public function eleve()
+    public function index()
     {
         $query="SELECT * FROM INSCRIPTION INNER JOIN ELEVES ON ELEVES.id_eleve=INSCRIPTION.eleve INNER JOIN NIVEAU ON NIVEAU.id_niveau=INSCRIPTION.niveau INNER JOIN CLASSES ON CLASSES.id_classe=INSCRIPTION.classe;
         ";

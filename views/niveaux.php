@@ -17,9 +17,21 @@
 <?php ob_start()?>
                     
  <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">NIVEAUX</h1>
-    <form action="/ajouterNiveau" method="POST" class="form_niveau mb-1" >
-        <input type="text" class="form-control name-niveau" name="niveau" >
+    <div class="d-flex justify-content-between">
+        <h1 class="h3 mb-4 text-gray-800">NIVEAUX</h1>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Filtres
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <?php foreach ($this->niveau as  $value) {?>
+                <a class="dropdown-item" href="/niveau/list/<?=urlencode($value["id_niveau"]) ?>"><?=$value["libelle_niveau"]?></a>
+            <?php } ?>
+            </div>
+        </div>
+    </div>
+    <form action="/niveau/ajout" method="POST" class="form_niveau mb-1" >
+        <input type="text" class="form-control name-niveau" placeholder="nom niveau" name="niveau" >
         <button type="submit" class="btn btn-outline-primary  addNiveau">+</button>
     </form>                    
              
@@ -50,7 +62,7 @@
                    </div>
                    <div class="card-body position-relative " >
                        <!-- Circle Buttons (Default) -->
-                       <form action="/ajouterClasse" class="position-absolute d-flex"  style="right: 5px;top:-15px;gap:5px"  method="POST">
+                       <form action="/Classe/ajout" class="position-absolute d-flex"  style="right: 5px;top:-15px;gap:5px"  method="POST">
                            <input type="hidden" value="<?=$value["id_niveau"]?>" name="id"/>
                             <input type="text" class="form-control" placeholder="nom de la classe" name="classe">
                            <button type="submit"  class=" addClass btn btn-primary" >+</button>
@@ -61,7 +73,7 @@
                             <h6 type="text" class=" text-danger w-25 border-0 mb-2"><?=$keyClasse?></h6>
                            <div>
                                <?php ksort($classe); $i=0;foreach ($classe as $keyValCl => $v) {  ?>
-                                <a href="/rechercherByClass?classe=<?=urlencode($v)?>" class="btn <?=$tabStyleBtn[$i]?> btn-circle">
+                                <a href="/eleve/liste/<?=urlencode($v)?>" class="btn <?=$tabStyleBtn[$i]?> btn-circle">
                                     <i class="fa-sharp fa-solid fa-<?=strtolower($keyValCl)?> "></i>                    
                                 </a>
                                 <?php $i++;} ?>

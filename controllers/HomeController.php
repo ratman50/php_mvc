@@ -4,7 +4,7 @@ class HomeController extends BaseController
     public function index()
     {
         if (!Util::isLoggedIn()) {
-            header('Location:/login');
+            header('Location:/auth/login');
             exit();
         }
         $telephone=$_SESSION["telephone"];

@@ -1,11 +1,15 @@
 <?php ob_start()?>
 <div class="container-form d-flex justify-content-center align-items-center ">
-    <a href="/eleve">liste des élèves</a>
     <form name="form-eleve" class=" d-flex justify-content-center align-items-center " method="POST" action="/ajouterEleve">
         <fieldset >
-            <legend>Disabled fieldset example</legend>
+            <div class="row  mb-4">
+                <div class="col d-flex justify-content-center align-items-center">
+                    <img src="/views/img/def.png"  class="img-fluid w-25" alt="">
+
+                </div>
+            </div>
             <div class="row">
-                <div class="mb-3 col-6">
+                <div class="mb-3 col-6 ">
                     <label for="disabledTextInput" class="form-label" >Prénom:</label>
                     <input type="text" id="disabledTextInput" name="prenom" class="form-control" >
                     <p class="notification text-danger"></p>

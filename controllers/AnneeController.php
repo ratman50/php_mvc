@@ -25,7 +25,7 @@ class AnneeController
         header('Location:/annee');
 
     }
-    public function annee()
+    public function index()
     {
         $query="SELECT * FROM ANNEE_SCOLAIRE ORDER BY name_scol DESC;";
         $this->model->requete($query);
@@ -41,7 +41,7 @@ class AnneeController
         {
             $id=$_GET['id'];
             $params=[
-                ":id_annee"=>$id
+                ":id_annee"=>$id   
             ];
             $query="UPDATE ANNEE_SCOLAIRE SET etat = 0 WHERE id = :id_annee ";
             $model= new BaseModel();
@@ -53,22 +53,17 @@ class AnneeController
     {
         
         $requestMethod=$_SERVER["REQUEST_METHOD"];
-        // echo "entree";
         if($requestMethod=="GET" && isset($_GET["id"]) && !empty($_GET["id"]))
         {
             $query="SELECT id FROM ANNEE_SCOLAIRE WHERE etat=1";
             $this->model->requete($query);
             $res=[];
             $res=$this->model->getResultat();
-            // var_dump($res);
-            if(empty($res))
+            if(!empty($res))
             {
                     $id=$res[0]["id"];
-                    // var_dump($id);
                     $param=[":id_annee"=>$id];
-                    var_dump($param);
                     $query="UPDATE ANNEE_SCOLAIRE SET etat = 0 WHERE id = :id_annee ";
-                    // var_dump($query);
                     $this->model->requete($query,$param);
 
             }
@@ -80,8 +75,13 @@ class AnneeController
             $query="UPDATE ANNEE_SCOLAIRE SET etat = 1 WHERE id = :id_annee ";
             $model= new BaseModel();
             $model->requete($query, $params);
+            $query="SELECT * FROM ANNEE_SCOLAIRE WHERE etat=1";
+            $this->model->requete($query);
+            $res=[];
+            $res=$this->model->getResultat();
+            $_SESSION["annee"]=$res[0]["name_scol"];    
         }
-        header('Location:/annee');
+        header('Location:/annee');   
     }
     public function modifierAnnee()
     {

@@ -19,10 +19,10 @@ require_once __DIR__."/../views/modalNotification.php";
     <title>Breukh school - HOME</title>
 
     <!-- Custom fonts for this template-->
-    <link href="views/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="/views/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Custom styles for this template-->
-    <link href="views/css/sb-admin-2.css" rel="stylesheet">
+    <link href="/views/css/sb-admin-2.css" rel="stylesheet">
 
 </head>
 
@@ -91,7 +91,7 @@ require_once __DIR__."/../views/modalNotification.php";
     <script src="/views/js/myscript.js" ></script>
 
     <!-- Page level plugins -->
-    <script src="/views/vendor/chart.js/Chart.min.js"></script>
+    <script src="/views/vendor/chart.js"></script>
 
     <!-- Page level custom scripts -->
     <script src="/views/js/demo/chart-area-demo.js"></script>
