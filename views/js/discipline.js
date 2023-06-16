@@ -1,5 +1,11 @@
 const urlListerClasse="http://localhost:8000/classe/list";
 updateClasseOnChange(inputGroupNiveau, inputGroupClasse, createOptionsClasse, urlListerClasse);
+if(+inputGroupDiscipline.value || +inputGroupClasse.value)
+{
+    const url=`http://localhost:8000/discipline/classe/${inputGroupClasse.value}&${inputGroupDiscipline.value}`;
+    lister(url, document.querySelector(".container-discipline"), createCheckbox);
+
+}
 
 inputGroupClasse.addEventListener("change",()=>{
     const url=`http://localhost:8000/discipline/classe/${inputGroupClasse.value}&${inputGroupDiscipline.value}`;
@@ -22,7 +28,6 @@ add_discipline.addEventListener("click",()=>{
         "niveau":inputGroupNiveau.options[inputGroupNiveau.selectedIndex].value,
         "groupe":valGroupe
     }
-    // console.log(data);
     notification_discipline.classList.add("invisible");
     if (discipline_value.value.length>=4) {
         
@@ -34,21 +39,16 @@ add_discipline.addEventListener("click",()=>{
             body: JSON.stringify(data)
             
         })
-        .then(response=>{handleDiscipline(response)})
+        .then(
+            response=>{handleDiscipline(response)}
+            ).then(resutl=>{console.log(resutl);})
         return;
     }
     notification_discipline.textContent="nombre de caractères trop petit";
     notification_discipline.className = 'text-danger';
     notification_discipline.parentElement.classList.remove("invisible");
 });
-function lister(url, container, callback) {
-    fetch(url)
-    .then(response=>response.json())
-    .then(data=>{
-        callback(data, container);
-    })
-    .catch(err=>console.log(err))
-}
+
 const input=text_group.querySelector("input");
 inputGroupDiscipline.addEventListener("change",()=>{
     const textcontent=inputGroupDiscipline.options[inputGroupDiscipline.selectedIndex].textContent;
@@ -129,7 +129,7 @@ update.addEventListener("click",()=>{
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    var raw = JSON.stringify(send);
+    var raw = JSON.stringify(tabchecked);
 
     var requestOptions = {
         method: 'POST',
@@ -144,8 +144,7 @@ update.addEventListener("click",()=>{
         lister(url, document.querySelector(".container-discipline"), createCheckbox);
     
     })
-    .catch(err=>console.log(err))
-    // console.log(send);
+    .catch(err=>console.log(err));
 });
 function createOptionsClasse(donnee, container)
 {
@@ -161,6 +160,7 @@ function updateClasseOnChange(declencheur, target, callback, url)
 {
     if (declencheur) {
         declencheur.addEventListener('change',e=>{
+            document.querySelector(".container-discipline").innerHTML="";
             const selectedIndex=e.target.selectedIndex;
             const selectedOption=e.target.options[selectedIndex];
             const valueOption=selectedOption.value;
@@ -248,7 +248,6 @@ async function handleDiscipline(response)
     parentNotif.classList.remove("invisible");
     // console.log(status, data);
     if (!status) {
-        console.log(parentNotif);
         parentNotif.classList.add("text-danger");
         discipline_value.focus();
         return;
@@ -257,11 +256,12 @@ async function handleDiscipline(response)
     let url;
     url=`http://localhost:8000/discipline/group/${inputGroupNiveau.value}`;
     lister(url, inputGroupDiscipline, createOptionDisci);
+    console.log(inputGroupClasse.value, inputGroupDiscipline.value);
     url= `http://localhost:8000/discipline/classe/${inputGroupClasse.value}&${inputGroupDiscipline.value}`;
     lister(url, document.querySelector(".container-discipline"), createCheckbox);
     discipline_value.value="";
     setTimeout(() => {
         notification_discipline.textContent="";
         parentNotif.classList.add("invisible");
-    }, 500);
+    }, 700);
 }

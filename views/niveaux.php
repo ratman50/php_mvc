@@ -26,11 +26,12 @@
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <?php foreach ($this->niveau as  $value) {?>
                 <a class="dropdown-item" href="/niveau/list/<?=urlencode($value["id_niveau"]) ?>"><?=$value["libelle_niveau"]?></a>
-            <?php } ?>
+                <?php } ?>
+                <a class="dropdown-item" href="/niveau">tous</a>
             </div>
         </div>
     </div>
-    <form action="/niveau/ajout" method="POST" class="form_niveau mb-1" >
+    <form  name="niveau" class="form_niveau mb-1" >
         <input type="text" class="form-control name-niveau" placeholder="nom niveau" name="niveau" >
         <button type="submit" class="btn btn-outline-primary  addNiveau">+</button>
     </form>                    

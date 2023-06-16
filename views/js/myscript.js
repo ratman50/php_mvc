@@ -8,17 +8,7 @@ const classes=document.querySelector('.classes');
 const niveauxSelect=document.querySelector('.form-label.niveaux select');
 const form_eleve=document.forms["form-eleve"];
 const modalNotif=document.getElementById('modalNotif')
-const notifContent=document.querySelector(".notif_content p").textContent;
 let tabId=[];
-if(notifContent)
-{
-    modalNotif.classList.add("show");
-    modalNotif.style.display="block";
-    setTimeout(() => {
-        modalNotif.classList.remove("show");
-    modalNotif.style.display="none";
-    }, 1300);
-}
 
 let data={
     "prenom":"",

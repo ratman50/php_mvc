@@ -4,6 +4,7 @@ class ClasseController extends BaseController
     
     public function ajout()
     {
+
         $requestMethod=$_SERVER["REQUEST_METHOD"];
         if($requestMethod=="POST" && 
             Util::isFielSet($_POST, ["id", "classe"])
@@ -34,6 +35,8 @@ class ClasseController extends BaseController
     }
     public function coeff($id)
     {
+        $classe=$this->search("CLASSES",["id_classe"], [$id])[0];
+       
         require_once __DIR__."/../views/coefficient.php";
 
         
@@ -80,25 +83,32 @@ class ClasseController extends BaseController
     public function maxval()
     {
         $data=$this->receiveData();
-        $classe=$data->classe;
-        $updates=$data->updates;
-        foreach ($updates as  $value) {
-            // $this->update("INFO_GROUPE",)
-            $up= isset($value->ressource) ?[
-                "nameCol"=>"ressource",
-                "valCol"=>$value->ressource
-            ]:[
-                "nameCol"=>"composition",
-                "valCol"=>$value->composition
+       
+        foreach ($data as  $value) {
+            $name_eval=$value->name;
+            $id_name_eval=$this->search("TYPES_NOTE",["type"],[$name_eval])[0]["id_type"];
+            $id_max_note=$this->search("MAX_NOTES",["discipline","type_note"],[$value->discipline, $id_name_eval])[0];
+            $update=[
+                "nameCol"=>"max_note",
+                "valCol"=>$value->value
             ];
-            $this->update("INFO_GROUPE", $up, ["nameCol"=>"id_info","valCol"=>$value->discipline]);
+            $this->update("MAX_NOTES", $update, ["nameCol"=>"id_max_note","valCol"=>$id_max_note["id_max_note"]]);
+           
+
             
         }
         echo json_encode(
             [
-                "message"=>"ok"
+                "message"=>"note(s) maximale(s) mise à jour"
             ]
             );
         // echo json_encode($data->updates);
     }
+
+    public function type_eval($niveau)
+    {
+        $resultat=$this->search("TYPES_NOTE",["niveau"],[$niveau]);
+        echo json_encode($resultat);
+    }
+    
 }

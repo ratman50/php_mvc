@@ -19,8 +19,6 @@ class AuthController extends BaseController
                 $_SESSION["telephone"] = $res[0]["num_user"];
                 $_SESSION["user_name"]=$res[0]["name_user"];
                 $annee=$this->search("ANNEE_SCOLAIRE",["etat"], [1]);
-                $_SESSION["annee"]=$annee[0]["name_scol"];
-                $_SESSION["id_annee"]=$annee[0]["id"];
                 header("Location: /niveau");
                 exit();
             }

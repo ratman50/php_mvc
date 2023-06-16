@@ -27,7 +27,7 @@ require_once __DIR__."/../views/modalNotification.php";
 </head>
 
 <body id="page-top">
-
+    <script src="/views/js/util.js"></script>
     <!-- Page Wrapper -->
     <div id="wrapper">
 
@@ -79,7 +79,6 @@ require_once __DIR__."/../views/modalNotification.php";
     <script src="/views/vendor/jquery/jquery.min.js"></script>
     <script src="/views/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- typeahead core JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js" integrity="sha512-qOBWNAMfkz+vXXgbh0Wz7qYSLZp6c14R0bZeVX2TdQxWpuKr6yHjBIM69fcF8Ve4GUX6B6AKRQJqiiAmwvmUmQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     
     <!-- Core plugin JavaScript-->
     <script src="/views/vendor/jquery-easing/jquery.easing.min.js"></script>
@@ -91,11 +90,11 @@ require_once __DIR__."/../views/modalNotification.php";
     <script src="/views/js/myscript.js" ></script>
 
     <!-- Page level plugins -->
-    <script src="/views/vendor/chart.js"></script>
+    <!-- <script src="/views/vendor/chart.js"></script> -->
 
     <!-- Page level custom scripts -->
-    <script src="/views/js/demo/chart-area-demo.js"></script>
-    <script src="/views/js/demo/chart-pie-demo.js"></script>
+    <!-- <script src="/views/js/demo/chart-area-demo.js"></script>
+    <script src="/views/js/demo/chart-pie-demo.js"></script> -->
 
 </body>
 

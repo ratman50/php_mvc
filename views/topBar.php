@@ -16,8 +16,26 @@
                 </div>
             </div>
         </form>
+        <!-- annee -->
+        <div>
+
+            <div class="input-group ">
+                <div class="input-group-prepend">
+                    <a type="button" class="nav-link text-light bg-primary" id="annee" href="http://localhost:8000/annee">choisir une annee</a>
+                    <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu " id="dropdown_annee">
+                        <li class="dropdown-item" >Action</li>
+                        <li class="dropdown-item" >Another action</li>
+                        <li class="dropdown-item">Something else here</li>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         
-        <a class="text-light rounded p-2 bg-primary" href="/annee" id="annee_actif" data-id=<?=$_SESSION["id_annee"] ?> ><?= $_SESSION["annee"]?></a>
         <!-- Topbar Navbar -->
         <ul class="navbar-nav ml-auto">
 
@@ -104,7 +122,7 @@
                     </h6>
                     <a class="dropdown-item d-flex align-items-center" href="#">
                         <div class="dropdown-list-image mr-3">
-                            <img class="rounded-circle" src="views/img/undraw_profile_1.svg" alt="...">
+                            <img class="rounded-circle" src="/views/img/undraw_profile_1.svg" alt="...">
                             <div class="status-indicator bg-success"></div>
                         </div>
                         <div class="font-weight-bold">
@@ -115,7 +133,7 @@
                     </a>
                     <a class="dropdown-item d-flex align-items-center" href="#">
                         <div class="dropdown-list-image mr-3">
-                            <img class="rounded-circle" src="views/img/undraw_profile_2.svg" alt="...">
+                            <img class="rounded-circle" src="/views/img/undraw_profile_2.svg" alt="...">
                             <div class="status-indicator"></div>
                         </div>
                         <div>
@@ -126,7 +144,7 @@
                     </a>
                     <a class="dropdown-item d-flex align-items-center" href="#">
                         <div class="dropdown-list-image mr-3">
-                            <img class="rounded-circle" src="views/img/undraw_profile_3.svg" alt="...">
+                            <img class="rounded-circle" src="/views/img/undraw_profile_3.svg" alt="...">
                             <div class="status-indicator bg-warning"></div>
                         </div>
                         <div>
@@ -183,4 +201,5 @@
         </ul>
 
 </nav>
+<script src="/views/js/topBar.js" ></script>
 <?php $topBar=ob_get_clean()?>

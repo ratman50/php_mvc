@@ -8,11 +8,13 @@
                     <label class="input-group-text" for="inputGroupNiveau">Niveaux</label>
                 </div>
                 <select class="custom-select" id="inputGroupNiveau">
-                    <option selected value="">Choisir un niveau</option>
-                    <?php foreach ($niveau as $key => $value) {?>
-                        <option value="<?=$value["id_niveau"] ?>"><?= $value["libelle_niveau"]?></option>
-
-                    <?php }?>
+                    <option value="">Choisir un niveau</option>
+                    <?php foreach ($niveau as $value) {?>
+                        <?php if(isset($ligne_classe[0]["id_niveau"]) && $ligne_classe[0]["id_niveau"]==$value["id_niveau"]){ ?>
+                            <option selected value="<?=$value["id_niveau"] ?>"><?= $value["libelle_niveau"]?></option>
+                        <?php }else{ ?>
+                            <option  value="<?=$value["id_niveau"] ?>"><?= $value["libelle_niveau"]?></option>
+                    <?php }  } ?>
                 </select>
             </div>
             <div class="input-group mb-3 col-6">
@@ -20,8 +22,18 @@
                     <label class="input-group-text" for="inputGroupClasse">Classes</label>
                 </div>
                 <select class="custom-select" id="inputGroupClasse">
-                    <option selected value="">Choisir une classe</option>
-                   
+                    <option  value="">Choisir une classe</option>
+                    <?php if(!empty($classes)) {
+                        foreach ($classes as  $value) {
+                            if($ligne_classe[0]["id_classe"]==$value["id_classe"]) {
+                            ?>
+                            <option selected  value="<?=$value["id_classe"] ?>"><?= $value["nom_classe"]?></option>
+                    <?php } else { ?>
+                            <option  value="<?=$value["id_classe"] ?>"><?= $value["nom_classe"]?></option>
+                    <?php } }
+                    }
+                    
+                    ?>
                 </select>
             </div>
         </div>  
@@ -35,6 +47,13 @@
                 <select class="custom-select " id="inputGroupDiscipline">
                     <option selected>Choisir</option>
                     
+                    <option value="0" class="border-1" >Nouveau</option>
+                    <?php if(!empty($groupes)) { ?>
+                       <?php foreach ($groupes as  $value) { ?>
+                          
+                            <option  value="<?=$value["id_groupe"] ?>"><?= $value["nom_groupe"]?></option>
+                    <?php  } } ?>
+                    <option value="null">Autre</option>
                 </select>
                
             </div>
@@ -60,8 +79,8 @@
         <div class="row">
             <div class="col ">
 
-                <h6 class=" title_discipline">Les disciplines de <a href="#" class="text-primary">...</a></h6>
-                <div class="container-discipline bg-white border-primary border mb-2 p-3 d-flex flex-wrap rounded" style="height:200px; gap:20px">
+                <h6 class=" title_discipline">Les disciplines de <a href="#" class="text-primary nav-link d-inline">...</a></h6>
+                <div class="container-discipline bg-white border-primary border mb-2 p-3 d-flex flex-wrap rounded" style="height:300px; gap:20px">
 
                 </div>
                 <div class="row">
@@ -77,6 +96,7 @@
 </div>
 
 <script src="/views/js/discipline.js"></script>
+
 
 <?php $content=ob_get_clean()?>
 <?php require_once __DIR__.'/../views/index.php';?>

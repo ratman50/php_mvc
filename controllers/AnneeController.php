@@ -1,11 +1,7 @@
 <?php 
-class AnneeController
+class AnneeController extends BaseController
 {
-    private $model;
-    public function __construct()
-    {
-        $this->model=new BaseModel(); 
-    }
+   
     public function supprimerAnnee()
     {
         echo "bn";
@@ -19,69 +15,69 @@ class AnneeController
             ];
             var_dump($params);
             $query="DELETE FROM  ANNEE_SCOLAIRE  WHERE id = :id_annee ";
-            $model= new BaseModel();
-            $model->requete($query, $params);
+            $this->model= new BaseModel();
+            $this->model->requete($query, $params);
         }
         header('Location:/annee');
 
     }
     public function index()
     {
-        $query="SELECT * FROM ANNEE_SCOLAIRE ORDER BY name_scol DESC;";
-        $this->model->requete($query);
-        $data=$this->model->getResultat();
+        // $query="SELECT * FROM ANNEE_SCOLAIRE ORDER BY name_scol DESC;";
+        // $this->model->requete($query);
+        // $data=$this->model->getResultat();
+        
         require_once __DIR__."/../views/Annee_scolaire.php";
     }
-    public function desactiverAnnee()
+    public function list()
     {
-        
-        $requestMethod=$_SERVER["REQUEST_METHOD"];
-        // echo "entree";
-        if($requestMethod=="GET" && isset($_GET["id"]) && !empty($_GET["id"]))
-        {
-            $id=$_GET['id'];
-            $params=[
-                ":id_annee"=>$id   
-            ];
-            $query="UPDATE ANNEE_SCOLAIRE SET etat = 0 WHERE id = :id_annee ";
-            $model= new BaseModel();
-            $model->requete($query, $params);
-        }
-        header('Location:/annee');
+        $query="
+        SELECT * FROM ANNEE_SCOLAIRE  ORDER BY name_scol DESC
+        ";
+        $this->model->requete($query);
+        $data=$this->model->getResultat();
+        echo json_encode([
+            "annees"=>$this->model->getResultat(),
+            "cours"=>$this->search("ANNEE_SCOLAIRE",["etat"],[1])[0]
+        ]);
     }
-    public function activerAnnee()
+    public function set($id)
     {
-        
-        $requestMethod=$_SERVER["REQUEST_METHOD"];
-        if($requestMethod=="GET" && isset($_GET["id"]) && !empty($_GET["id"]))
+        $annee=$this->search("ANNEE_SCOLAIRE", ["id"],[$id]);
+        if(empty($annee))
         {
-            $query="SELECT id FROM ANNEE_SCOLAIRE WHERE etat=1";
-            $this->model->requete($query);
-            $res=[];
-            $res=$this->model->getResultat();
-            if(!empty($res))
+            http_response_code(400);
+            echo json_encode(
+                [
+                    "data"=>[],
+                    "message"=>"Année non existante",
+                    "status"=>"400",
+                ]
+            );
+            die();   
+        } 
+        $actif=$this->search("ANNEE_SCOLAIRE",["etat"],['1']);
+        if(!empty($actif))
+        {
+            $id_actif=$actif[0]["id"];
+            $this->update("ANNEE_SCOLAIRE",["nameCol"=>"etat","valCol"=>"0"],["nameCol"=>"id","valCol"=>$id_actif]);
+            if($id_actif==$annee[0]['id'])
             {
-                    $id=$res[0]["id"];
-                    $param=[":id_annee"=>$id];
-                    $query="UPDATE ANNEE_SCOLAIRE SET etat = 0 WHERE id = :id_annee ";
-                    $this->model->requete($query,$param);
 
+                echo json_encode([
+                    "message"=>"Aucune année n'est activée"
+                ]);  
+                die();
             }
-
-            $id=$_GET['id'];
-            $params=[
-                ":id_annee"=>$id
-            ];
-            $query="UPDATE ANNEE_SCOLAIRE SET etat = 1 WHERE id = :id_annee ";
-            $model= new BaseModel();
-            $model->requete($query, $params);
-            $query="SELECT * FROM ANNEE_SCOLAIRE WHERE etat=1";
-            $this->model->requete($query);
-            $res=[];
-            $res=$this->model->getResultat();
-            $_SESSION["annee"]=$res[0]["name_scol"];    
         }
-        header('Location:/annee');   
+        $annee=$annee[0];
+        $etat=$annee["etat"] ? 0 : 1;
+        $this->update("ANNEE_SCOLAIRE",["nameCol"=>"etat","valCol"=>$etat],["nameCol"=>"id","valCol"=>$annee["id"]]);
+
+        echo json_encode([
+            "message"=>"Annee mise a jour"
+        ]);  
+
     }
     public function modifierAnnee()
     {
@@ -130,38 +126,40 @@ class AnneeController
 
    
     }
-    public function ajouterAnnee()
+    public function add()
     {
+        $data=$this->receiveData();
+        
         $requestMethod=$_SERVER["REQUEST_METHOD"];
         $tabNotificattion=[
             "Erreur:format non respecter XXXX-YYYY avec X, Y numerique",
             "Erreur: Le pas entre année doit etre de 1 année",
             "Année Valide"
         ];
-        if($requestMethod=="POST" && isset($_POST["annee"]) && !empty($_POST["annee"]))
+        if($requestMethod=="POST" && !empty($data))
         {
-            $annee=$_POST['annee'];
-            $query="SELECT *  FROM ANNEE_SCOLAIRE WHERE name_scol =:annee ";
-            $params=[
-                ":annee"=>$annee
-            ];
+            $annee=$data[0];
+            
             $valChecking=Util::checkAnnee($annee);
+          
             $notification=$tabNotificattion[$valChecking];
             if($valChecking==2 )
             {
-                $this->model->requete($query, $params);
+                $query="SELECT *  FROM ANNEE_SCOLAIRE WHERE name_scol LIKE '%$annee%' ";
+                
+                $this->model->requete($query);
                 if($this->model->getRowsAffected()==0)
                 {
-                    
-                    $query="INSERT INTO ANNEE_SCOLAIRE (name_scol) VALUES (:annee)";
-                    $this->model->requete($query,$params);
+                    $query="INSERT INTO ANNEE_SCOLAIRE (name_scol) VALUES ($annee)";
+                    $this->model->requete($query);
                     $notification="Année scolaire enregistree";
                 }else
                 $notification="Année déja existante";
             }
-            $_SESSION['notification']=$notification;
         }
-        header('Location:/annee');
+        echo json_encode(
+            $notification
+        );
 
     }
 }

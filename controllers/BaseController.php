@@ -47,8 +47,9 @@ class BaseController
         $this->model->requete($query);
         return $this->model->getResultat()[0][$nameId];
     }
-    protected function search($nameTable, $cols=[], $valCol=[])
+    protected function search($nameTable, $cols=[], $valCol=[], $param=1)
     {
+        $op=$param ? "=": "LIKE";
         $query="SELECT * FROM ".$nameTable;
         
         if (isset($cols[0]) && isset($valCol[0])) {
@@ -57,12 +58,11 @@ class BaseController
         $i=0;
         while (isset($cols[$i]) && isset($valCol[$i]))
         {
-            $query=$query.$cols[$i]." = :val$i AND ";
+            $query=$query.$cols[$i]." $op :val$i AND ";
             $params[":val$i"]=$valCol[$i];
             ++$i;
         } 
         $query=$i>0?substr($query,0,-5):$query;
-        
         $this->model->requete($query, $params);
         return $this->model->getResultat();
     }
@@ -82,6 +82,7 @@ class BaseController
                 $tmp=$tmp.$split[$i][0];
             if($i>1)
                 $code=$tmp;
+            $code=mb_strtoupper($code);
         } while ($this->search("DISCIPLINES",["code_discipline"],[$code]));
         return $code;
     }
@@ -113,7 +114,8 @@ class BaseController
     protected function update($nameTable, $update, $conditions)
     {
         $query="UPDATE  ".$nameTable." SET ".$update["nameCol"]." = ".$update["valCol"]." WHERE ".$conditions["nameCol"]."= ".$conditions["valCol"];
-       $this->model->requete($query);
+        
+        $this->model->requete($query);
     
         // UPDATE `INFO_GROUPE` SET `etat` = '1' WHERE `INFO_GROUPE`.`id_info` = 6;
 

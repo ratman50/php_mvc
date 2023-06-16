@@ -4,7 +4,12 @@ class EleveController extends BaseController
 {
     public function liste($id="")
     {
-        $query = "SELECT * FROM INSCRIPTION INNER JOIN ELEVES ON ELEVES.id_eleve=INSCRIPTION.eleve INNER JOIN NIVEAU ON NIVEAU.id_niveau=INSCRIPTION.niveau INNER JOIN CLASSES ON CLASSES.id_classe=INSCRIPTION.classe";
+        $query = "
+        SELECT * FROM INSCRIPTION 
+        INNER JOIN ELEVES ON ELEVES.id_eleve=INSCRIPTION.eleve 
+        INNER JOIN NIVEAU ON NIVEAU.id_niveau=INSCRIPTION.niveau 
+        INNER JOIN CLASSES ON CLASSES.id_classe=INSCRIPTION.classe
+        ";
         $params=[];
         $classe="";
         $id_classe="";
@@ -17,6 +22,7 @@ class EleveController extends BaseController
             $res=$this->model->getResultat();
             $classe=$res[0]["nom_classe"];
             $id_classe=$res[0]["id_classe"];
+          
         }
         $this->model->requete($query, $params);
         $data=$this->model->getResultat();
