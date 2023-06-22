@@ -1,6 +1,11 @@
 <?php
 class NoteController extends BaseController
 {
+    public function list($id)
+    {
+        require_once __DIR__."/../views/note.php";
+
+    }
     public function setval()
     {
         $data=$this->receiveData();
@@ -16,7 +21,7 @@ class NoteController extends BaseController
                 $this->update("NOTES", ["nameCol"=>"etat"   ,"valCol"=>$value->etat], ["nameCol"=>"id_note","valCol"=>$result[0]["id_note"]]);
             }
         }
-        echo json_encode("mise à jour");
+        echo json_encode("Note(s) mise à jour avec succès");
     }
     public function val($params)
     {
@@ -29,6 +34,7 @@ class NoteController extends BaseController
         }
         
         $result=$this->search("MAX_NOTES",["discipline","type_note"],[$tab["discipline"],$tab["type_note"]]);
+        
         if(!empty($result))
         {
             $id_max_note=$result[0]["id_max_note"];

@@ -91,6 +91,7 @@
         </fieldset>
     </form>
 </div>
+<script src="/views/js/form_eleve.js"></script>
 <?php $content=ob_get_clean()?>
 <?php 
 require_once __DIR__.'/../views/index.php';

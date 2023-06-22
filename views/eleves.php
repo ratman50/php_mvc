@@ -44,7 +44,7 @@
                             <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
-                            <div class="dropdown-menu " id="dropdown_semestre">
+                            <div class="dropdown-menu " id="dropdown_semestre" data-classe="<?=$id_classe ?>">
                                 <li class="dropdown-item" >Action</li>
                                 <li class="dropdown-item" >Another action</li>
                                 <li class="dropdown-item">Something else here</li>
@@ -58,7 +58,8 @@
                             <label class="input-group-text" for="inputGroupDiscipline">Discipline</label>
                         </div>
                         <select class="custom-select " id="inputGroupDiscipline">
-                            
+                            <option value="">CHOISIR</option>
+
                         </select>
                     </div>        
                     
@@ -92,7 +93,12 @@
                                             <table class="table table-striped mb-0 ">
                                                 <thead class="bg-primary">
                                                     <?php if(!empty($classe)) { ?>
-                                                        <h4 class="text-primary text-center"><?= $classe?></h4>
+                                                        <div class=" d-flex justify-content-between p-2">
+
+                                                            <h4 class="text-primary text-center"><?= $classe?></h4>
+                                                            <h4 class="text-left">Effectif(s):<span class="text-primary"><?= count($data) ?></span></h4>
+                                                            <h4 class="text-left">Moyenne</h4>
+                                                        </div>
                                                     <?php } ?>
                                                     <tr>
 
@@ -118,7 +124,7 @@
                                                         <tr>
                                                             <td><?php if($value["sexe"]) { ?><img class="img-profile rounded-circle" src="/views/img/undraw_profile.svg"> <?php }else { ?> <img class="img-profile rounded-circle" src="/views/img/undraw_profile_1.svg"><?php } ?></td>
                                                             <td> <?=$value["numero"] ?></td>
-                                                            <td><?= $value["prenom"]." ".$value["nom"] ?></td>
+                                                            <td><a class="nav-link" href="/note/list/<?= urlencode($value["id_inscrip"]) ?>"><?= $value["prenom"]." ".$value["nom"] ?></a></td>
                                                             <td><?= $value['date_naiss'] ?></td>
                                                             <td><?= $value['lieu_naiss'] ?></td>
                                                             <td><?= $value["sexe"]==1?"garçon":"fille"?></td>
@@ -168,12 +174,14 @@
         ?>
 
     </div>
+    <?php   if(!empty($classe)){?>
     <div class="row justify-content-center align-content-center mt-3">
-        <div class="col-4">loading</div>
+        <div class="col-4"></div>
         <div class="col-1">
             <button class="btn btn-primary " id="save">Enregistrer</button>
         </div>
     </div>
+    <?php }?>
 </div>
 <script src="/views/js/eleve.js"></script>
 <?php $content=ob_get_clean()?>

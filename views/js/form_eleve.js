@@ -27,40 +27,14 @@ const tabRequire=[
     "niveau",
     "classe"
 ];
-// function updateClasseOnChange(declencheur, target, callback, url)
-// {
-//     console.log(declencheur);
-//     if (declencheur) {
-        
-//         declencheur.addEventListener('change',e=>{
-//             const selectedIndex=e.target.selectedIndex;
-//             const selectedOption=e.target.options[selectedIndex];
-//             const valueOption=selectedOption.value;
-//             const uri=`${url}/${+valueOption}`;
-//             if (valueOption) {
-//                 fetch(uri)
-//                 .then(response=>response.json())
-//                 .then(data=>{
-//                     callback(data,target);
-//                     if (declencheur===inputGroupNiveau) {
-//                         console.log("degak");
-//                         fetch(`http://localhost:8000/discipline/group/${valueOption}`)
-//                         .then(response=>response.json())
-//                         .then(data=>{createOptionDisci(data,inputGroupDiscipline)})
-//                     }
-//                 })
-//                 .catch(er=>{console.log(er)})
-//             }else
-//             callback([],target);
-        
-//         })
-//     }
-// }
-// const urlListerGroupe="http://localhost:8000/discipline/group";
+let isOk;
+const urlListerGroupe=`${hostname}/discipline/group`;
 // updateClasseOnChange(inputGroupClasse, inputGroupDiscipline, createOptionDisci, urlListerGroupe);
 // console.log(add_discipline);
 
-
+// inputGroupClasse.addEventListener("change",()=>{
+//     lister(urlListerGroupe, inputGroupDiscipline, createOptionDisci);
+// } )
 
 // input.addEventListener("blur",()=>{
    
@@ -71,9 +45,10 @@ const tabRequire=[
 //     },600)
 
 // })
-
-updateClasseOnChange(form_eleve["niveau"], classes.querySelector('select'), createOptions,urlListerClasse);
-console.log(inputGroupNiveau);
+form_eleve["save"].disabled=true;
+form_eleve["niveau"].addEventListener("change", ()=>{
+    lister(`${hostname}/classe/list/${form_eleve['niveau'].value}`,classes.querySelector('select'), createOptions)
+})
 form_eleve["save"].addEventListener("click",()=>{
     let isOk="";
     tabRequire.forEach(elem=>{
@@ -90,21 +65,21 @@ form_eleve["save"].addEventListener("click",()=>{
     data["date_naiss"]=form_eleve["date_naiss"].value;
     data["lieu_naiss"]=form_eleve["lieu_naiss"].value;
     console.log(data);
-    if(!isOk)
-    {
-        fetch("http://localhost:8000/ajouterEleve",{
-            method:"POST",
-            headers:{
-                'Content-Type':"application/json"
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response=>response.json())
-        .then(data=>{console.log(data);
-        window.location.href="/eleve";
-        })
-        .catch(err=>console.log(err))
-    }
+    // if(!isOk)
+    // {
+    //     fetch("http://localhost:8000/ajouterEleve",{
+    //         method:"POST",
+    //         headers:{
+    //             'Content-Type':"application/json"
+    //         },
+    //         body: JSON.stringify(data)
+    //     })
+    //     .then(response=>response.json())
+    //     .then(data=>{console.log(data);
+    //     window.location.href="/eleve";
+    //     })
+    //     .catch(err=>console.log(err))
+    // }
     // console.log(isOk);
 })
 let Util={
@@ -126,10 +101,11 @@ let Util={
             notifValue.textContent=notif;
         }
         else if(valField){
-            fetch(`http://localhost:8000/searchEleveByNum?id=${+valField}`)
+            fetch(`${hostname}/eleve/find/${+valField}`)
             .then(response=> response.json())
             .then(resultat=>{
-                notif=resultat.data ? "":"numero deja attribué";
+                console.log(resultat);
+                notif=resultat.data ?"numero deja attribué":"";
                 notifValue.textContent=notif;
             })
             .catch(er=>{console.log(er)})
@@ -157,12 +133,21 @@ const FieldName={
 tabRequire.forEach(elem=>{
     const inputElem=form_eleve[elem];
     
-    inputElem.addEventListener("blur",(e)=>{
+    inputElem.addEventListener("blur",async(e)=>{
         const target=e.target;
         const method=FieldName[target.name];
+        console.log(method);
         const notifValue=target.parentElement.querySelector('.notification');
         notifValue.textContent="";
-        Util[method](target, notifValue);
+        await Util[method](target, notifValue);
+        isOk='';
+        tabRequire.forEach(elem=>{
+            const inputElem=form_eleve[elem];
+            const method=FieldName[inputElem.name];
+            const notifValue=inputElem.parentElement.querySelector('.notification');
+            isOk +=notifValue.textContent;
+    
+        });
     })
 });
 

@@ -15,9 +15,28 @@ lister(`${hostname}/semestre/list/${semestre.dataset.id}`, dropdown_semestre, (r
     container.innerHTML="";
     result.periodes.forEach(element => {
         container.innerHTML+=`
-            <li class="dropdown-item" style="cursor:pointer" data-semestre='${element.id_semestre}'>${element.libelle_semestre.toUpperCase()}</li>
+            <li class="dropdown-item semestre_item" style="cursor:pointer" data-semestre='${element.id_semestre}'>${element.libelle_semestre.toUpperCase()}</li>
         `;
     });
+
+    container.querySelectorAll(".semestre_item").forEach(semestre_item=>{
+        semestre_item.addEventListener("click",()=>{
+            const update={
+                semestre:semestre_item.dataset.semestre,
+                "classe":dropdown_semestre.dataset.classe
+            }
+            requestOptions.body=JSON.stringify(update);
+            fetch(`${hostname}/semestre/set`,requestOptions)
+            .then(response=>response.json())
+            .then(result=>{
+                showModal(result);
+                semestre.innerHTML=semestre_item.textContent;
+                semestre.dataset.semestre=semestre_item.dataset.semestre;
+                load_note_max(inputGroupDiscipline, inputGroupNote);
+
+            });
+        })
+    })
     
 });
 
@@ -72,8 +91,12 @@ save.addEventListener("click",()=>{
     fetch(`${hostname}/note/setval`, requestOptions)
     .then(response=>response.json())
     .then(result=>{
+        showModal(result);
         tab_val=[];
-        save.disabled=false;
+        save.innerHTML=`  <i class="fa-solid fa-spinner fa-spin-pulse fa-spin-reverse"></i>`
+        setTimeout(()=>{
+            save.innerHTML="Enregister"
+        },100)
     })
 
 })
@@ -123,6 +146,10 @@ function load_note_max(discipline, note) {
         .then(result=>{
             if(result)
             {
+                save.disabled=true;
+                document.querySelectorAll("changed").forEach(change=>{
+                    change.classList.remove("changed");
+                })
                 lister(`${hostname}/note/val/discipline=${inputGroupDiscipline.value}&type_note=${inputGroupNote.value}&semestre=${semestre.dataset.semestre}`,
                     document.querySelector(".input"),(result, container)=>{
                     const numbers=container.querySelectorAll("input[type='number']");
@@ -142,6 +169,7 @@ function load_note_max(discipline, note) {
                         {
                             number.value=0;
                             check.checked=true;
+                            number.disabled=false;  
 
                         }
                     })

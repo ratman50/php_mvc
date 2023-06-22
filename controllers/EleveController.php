@@ -76,7 +76,7 @@ class EleveController extends BaseController
 
 
     }
-    public function ajoutEleve()
+    public function add()
     {
         $requestMethod=$_SERVER["REQUEST_METHOD"];
         // echo "entree";
@@ -114,23 +114,15 @@ class EleveController extends BaseController
         // header('Location:/listerClasse');
 
     }
-    public function searchEleveByNum()
+    public function find($numero)
     {
         $requestMethod=$_SERVER["REQUEST_METHOD"];
-        $uri=$this->getQueryStringParams();
-
-        if($requestMethod=="GET" && isset($uri["id"]) && !empty($uri["id"]))
+        if($requestMethod=="GET")
         {
-            $id=$uri["id"];
-            $query="SELECT numero  FROM ELEVES WHERE numero =:id;";
-            $params=[
-                ":id"=>$id,
-            ];
-            $this->model->requete($query, $params);
-            $row=$this->model->getRowsAffected();
+           $row_eleve=$this->search("ELEVES", ["numero"], [$numero]);
             echo json_encode(
                 [
-                    "data"=>$row>0 ? false : true,
+                    "data"=>!empty($row_eleve),
                     "message"=>"SUCCESS",
                     "status"=>"200"
                 ]
@@ -139,6 +131,31 @@ class EleveController extends BaseController
 
         }
 
+    }
+    public function get($id_inscription)
+    {
+        $requete="
+        SELECT * FROM INSCRIPTION 
+        INNER JOIN ELEVES ON INSCRIPTION.eleve=ELEVES.id_eleve 
+        INNER JOIN CLASSES ON CLASSES.id_classe=INSCRIPTION.classe 
+        INNER JOIN ANNEE_SCOLAIRE ON ANNEE_SCOLAIRE.id=INSCRIPTION.annee
+        WHERE INSCRIPTION.id_inscrip=$id_inscription;
+        ";
+        $this->model->requete($requete);
+        $resultat=$this->model->getResultat();
+        $classe=$resultat[0]["classe"];
+        $query="
+            SELECT COUNT(eleve) as effectif FROM INSCRIPTION WHERE classe=$classe;
+        ";
+        $this->model->requete($query);
+        $effectif=$this->model->getResultat()[0]["effectif"];
+        echo json_encode(
+            [
+                "eleve"=>$resultat[0],
+                "effectif"=>$effectif
+
+            ]
+        );
     }
     public function index()
     {
